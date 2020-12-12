@@ -1,1 +1,1 @@
-# RB130
+Launch School's RB130 exercises
