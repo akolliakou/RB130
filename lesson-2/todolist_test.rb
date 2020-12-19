@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'minitest/autorun'
 require "minitest/reporters"
 Minitest::Reporters.use!
@@ -75,8 +78,128 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_mark_done_at
-    done_todo = @todo1.done!
-    assert_equal(done_todo, @list.mark_done_at(0))
-    assert_raises(IndexError) { @list.mark_done_at(7)}
+    @list.mark_done_at(0)
+    assert_equal(true, @todo1.done?)
+    assert_equal(false, @todo2.done?)
+    assert_equal(false, @todo3.done?)
+    assert_raises(IndexError) { @list.mark_done_at(7) }
+  end
+
+  def test_mark_undone_at
+    @list.mark_done_at(0)
+
+    @list.mark_undone_at(0)
+
+    assert_equal(false, @todo1.done?)
+    assert_equal(false, @todo2.done?)
+    assert_equal(false, @todo3.done?)
+    assert_raises(IndexError) { @list.mark_undone_at(7) }
+  end
+
+  def test_done
+    @list.done!
+    assert_equal(true, @todo1.done?)
+    assert_equal(true, @todo2.done?)
+    assert_equal(true, @todo3.done?)
+    assert_equal(true, @list.done?)
+  end
+
+  def test_remove_at
+    removed = @list.remove_at(0)
+    assert_equal(@todo1, removed)
+    assert_equal([@todo2, @todo3], @list.to_a)
+    assert_raises(IndexError) { @list.remove_at(7) }
+  end
+
+  def test_to_s
+    output = <<~OUTPUT.chomp
+    [ ] Buy milk
+    [ ] Clean room
+    [ ] Go to gym
+    OUTPUT
+
+    assert_equal(output, @list.to_s)
+  end
+
+  def test_to_s_done
+    @list.mark_done_at(0)
+    output = <<~OUTPUT.chomp
+    [X] Buy milk
+    [ ] Clean room
+    [ ] Go to gym
+    OUTPUT
+
+    assert_equal(output, @list.to_s)
+  end
+
+  def test_to_s_all_done
+    @list.done!
+    output = <<~OUTPUT.chomp
+    [X] Buy milk
+    [X] Clean room
+    [X] Go to gym
+    OUTPUT
+
+    assert_equal(output, @list.to_s)
+  end
+
+  def test_each_iterate
+    @list.each { |todo| todo.done! }
+
+    assert_equal(true, @todo1.done?)
+    assert_equal(true, @todo2.done?)
+    assert_equal(true, @todo3.done?)
+  end
+
+  def test_each_return
+    result = @list.each { |todo| todo.done! }
+    assert_equal(result, @list)
+  end
+
+  def test_select
+    @todo1.done!
+    new_list = @list.select { |todo| todo.done? }
+
+    assert_equal([@todo1], new_list.to_a)
+  end
+
+  def test_find_by_title
+    found = @list.find_by_title("Clean room")
+    assert_equal(@todo2, found)
+  end
+
+  def test_all_done
+    @todo1.done!
+    @todo2.done!
+
+    new_list = @list.all_done
+    assert_equal([@todo1, @todo2], new_list.to_a)
+  end
+
+  def test_all_not_done
+    @todo1.done!
+    @todo2.done!
+
+    new_list = @list.all_not_done
+    assert_equal([@todo3], new_list.to_a)
+  end
+
+  def test_mark_done
+    @list.mark_done("Clean room")
+    assert_equal(true, @todo2.done?)
+  end
+
+  def test_mark_all_done
+    @list.mark_all_done
+
+    assert_equal(true, @list.done?)
+  end
+
+  def test_mark_all_undone
+    @list.mark_all_undone
+
+    assert_equal(false, @todo1.done?)
+    assert_equal(false, @todo2.done?)
+    assert_equal(false, @todo3.done?)
   end
 end
