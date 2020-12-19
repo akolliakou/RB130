@@ -35,14 +35,48 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_shift
-    todo = @list.shift
-    assert_equal(@todo1, todo)
+    assert_equal(@todo1, @list.shift)
     assert_equal([@todo2, @todo3], @list.to_a)
   end
 
   def test_pop
-    todo = @list.pop
-    assert_equal(@todo3, todo)
+    assert_equal(@todo3, @list.pop)
     assert_equal([@todo1, @todo2], @list.to_a)
+  end
+
+  def test_done_question
+    assert_equal(false, @list.done?)
+  end
+
+  def test_add_raise_error
+    assert_raises(TypeError) { @list << 5 }
+    assert_raises(TypeError) { @list << 'hello' }
+  end
+
+  def test_shovel_todo
+    new_todo = Todo.new("Test")
+    @list << new_todo
+    @todos << new_todo
+
+    assert_equal(@todos, @list.to_a)
+  end
+
+  def test_add_todo
+    new_todo = Todo.new("Test")
+    @list.add(new_todo)
+    @todos << new_todo
+
+    assert_equal(@todos, @list.to_a)
+  end
+
+  def test_item_at
+    assert_equal(@todo1, @list.item_at(0))
+    assert_raises(IndexError) { @list.item_at(7) }
+  end
+
+  def test_mark_done_at
+    done_todo = @todo1.done!
+    assert_equal(done_todo, @list.mark_done_at(0))
+    assert_raises(IndexError) { @list.mark_done_at(7)}
   end
 end

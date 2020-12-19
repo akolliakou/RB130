@@ -73,7 +73,7 @@ class TodoList
   alias_method :add, :<<
 
   def item_at(idx)
-    @todos[idx]
+    @todos.fetch(idx)
   end
 
   def mark_done_at(idx)
