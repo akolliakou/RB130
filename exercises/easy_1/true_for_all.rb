@@ -22,6 +22,21 @@
 # Your method may not use any standard ruby method that is named all?, any?, 
 # none?, or one?.
 
+# array-specific
+
+def all?(arr)
+  counter = 0
+
+  while counter < arr.size
+    return false if !yield(arr[counter])
+    counter += 1
+  end
+
+  true
+end
+
+# all collections
+
 def all?(collection)
   collection.each { |el| return false if !yield(el) }
   true

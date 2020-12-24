@@ -21,6 +21,21 @@
 # Your method may not use any standard ruby method that is named all?, any?, 
 # none?, or one?.
 
+# array-only
+
+def any?(arr)
+  count = 0
+
+  while count < arr.size
+    return true if yield(arr[count])
+    count += 1
+  end
+
+  false
+end
+
+# all collections
+
 def any?(arr)
   arr.each { |el| return true if yield(el) }
   false
