@@ -22,6 +22,23 @@
 # Your method may not use any standard ruby method that is named all?, any?, 
 # none?, or one?.
 
+# array-specific
+
+def one?(col)
+  counter = 0
+  count = 0
+
+  while counter < col.size
+    count += 1 if yield(col[counter])
+    break if count > 1
+    counter += 1
+  end
+
+  count == 1
+end
+
+# all collections
+
 def one?(collection)
   collection.select { |el| yield(el) }.size == 1
 end
@@ -38,6 +55,7 @@ def one?(collection)
 
   counter == 1
 end
+
 
 p one?([1, 3, 5, 6]) { |value| value.even? } == true
 p one?([1, 3, 5, 7]) { |value| value.odd? } == false
