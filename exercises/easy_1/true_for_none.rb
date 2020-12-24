@@ -23,6 +23,21 @@
 # Enumerable classes: all?, any?, none?, one?. You may, however, use either 
 # of the methods created in the previous two exercises.
 
+# array_specific
+
+def none?(arr)
+  counter = 0
+
+  while counter < arr.size
+    return false if yield(arr[counter])
+    counter += 1
+  end
+
+  true
+end
+
+# all collections
+
 def none?(collection)
   collection.each { |el| return false if yield(el) }
   true
