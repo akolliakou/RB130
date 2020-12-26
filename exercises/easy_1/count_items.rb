@@ -1,3 +1,25 @@
+# Write a method that takes an array as an argument, and a block that returns true 
+# or false depending on the value of the array element passed to it. The method 
+# should return a count of the number of times the block returns true.
+
+# You may not use Array#count or Enumerable#count in your solution.
+
+# arr-specific
+
+def count(arr)
+  counter = 0
+  count = 0
+
+  while counter < arr.size
+    count += 1 if yield(arr[counter])
+    counter += 1
+  end
+
+  count
+end
+
+# all collections
+
 def count(collection)
   count = 0
 
