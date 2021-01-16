@@ -3,9 +3,6 @@
 # The names are in an encrypted form, though, using a simple (and incredibly
 # weak) form of encryption called Rot13.
 
-ALPHABET_DOWN = (("a".."z").to_a + ("a".."z").to_a)
-ALPHABET_UP = (("A".."Z").to_a + ("A".."Z").to_a)
-
 NAMES = [
   'Nqn Ybirynpr',
   'Tenpr Ubccre',
@@ -26,25 +23,28 @@ NAMES = [
   'Lhxvuveb Zngfhzbgb',
   'Unllvz Fybavzfxv',
   'Tregehqr Oynapu'
-].freeze
+]
+
+ALPHABET_UPPER = ('A'..'Z').to_a + ('A'..'Z').to_a
+ALPHABET_LOWER = ('a'..'z').to_a + ('a'..'z').to_a
 
 def decrypt(arr)
-  arr_final = arr.clone
-
-  arr_final.map do |str|
+  arr.map do |str|
     str.split.map do |word|
       word.chars.map do |char|
-        if /[a-zA-Z]/.match(char)
-          if char == char.downcase
-            ALPHABET_DOWN[ALPHABET_DOWN.index(char) - 13]
-          elsif char == char.upcase
-            ALPHABET_UP[ALPHABET_UP.index(char) - 13]
-          end
-        else
-          char
-        end
+        decipher_char(char)
       end.join
     end.join(' ')
+  end
+end
+
+def decipher_char(char)
+  if char =~ /[^a-zA-Z]/
+    char
+  elsif char == char.upcase
+    ALPHABET_UPPER[ALPHABET_UPPER.index(char) - 13]
+  else
+    ALPHABET_LOWER[ALPHABET_LOWER.index(char) - 13]
   end
 end
 
